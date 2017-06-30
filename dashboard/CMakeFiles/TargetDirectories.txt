@@ -1,4 +1,0 @@
-/home/ilbetzy/GitLab/dashboard/CMakeFiles/rebuild_cache.dir
-/home/ilbetzy/GitLab/dashboard/CMakeFiles/dashboard_demo.dir
-/home/ilbetzy/GitLab/dashboard/CMakeFiles/edit_cache.dir
-/home/ilbetzy/GitLab/dashboard/CMakeFiles/dashboard.dir

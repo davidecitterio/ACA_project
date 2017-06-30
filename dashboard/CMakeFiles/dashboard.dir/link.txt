@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdashboard.a  CMakeFiles/dashboard.dir/src/window.cc.o CMakeFiles/dashboard.dir/src/process_communicator.cc.o CMakeFiles/dashboard.dir/src/gnuplot_api.cc.o CMakeFiles/dashboard.dir/src/plot_description.cc.o CMakeFiles/dashboard.dir/src/plotter.cc.o
-/usr/bin/ranlib libdashboard.a
