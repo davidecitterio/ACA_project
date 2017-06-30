@@ -2,14 +2,15 @@
 #include <string>
 
 #include "SynchronizedQueue.h"
+// #include "consumer.h"
 
 using namespace std;
 
 SynchronisedQueue<int> MyQueue;
 
-void InsertToQueue()
+void InsertToQueue(int i)
 {
-    int i= 0;
+    // int i= 0;
 
     while(true)
     {
@@ -55,7 +56,9 @@ int main()
 
     cout << "Test Started" << endl;
 
-    boost::thread startInsertIntoQueue = boost::thread(InsertToQueue);
+    // boost::thread consumer = boost::thread(consume, &MyQueue);
+
+    boost::thread startInsertIntoQueue = boost::thread(InsertToQueue, 37);
     boost::thread consumeFromQueue = boost::thread(ConsumeFromQueue);
 
     boost::this_thread::sleep(boost::posix_time::seconds(5)); //After 5 seconds
