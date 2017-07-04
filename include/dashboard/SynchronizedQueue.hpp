@@ -1,6 +1,5 @@
 #include <queue>
 #include <boost/thread.hpp>
-// #include "consumer.hpp"
 
 template <typename T>
 class SynchronisedQueue {

@@ -3,59 +3,19 @@
 #include <mosquitto.h>
 #include <mosquittopp.h>
 
-#include "../include/consumer.hpp"
-#include "../include/SynchronizedQueue.hpp"
+#include "dashboard/consumer.hpp"
+#include "dashboard/SynchronizedQueue.hpp"
 
 using namespace std;
 
 int i = 1;
 SynchronisedQueue<string> MyQueue;
-// C<int> MyConsumer;
 
-// void InsertToQueue(int i)
-// {
-//     // int i= 0;
-//
-//     while(true)
-//     {
-//       boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-//       MyQueue.Enqueue(++i);
-//     }
-//
-// }
 void InsertToQueue(char* i)
 {
   MyQueue.Enqueue(i);
 }
 
-// void ConsumeFromQueue()
-// {
-//     while(true)
-//     {
-//         int number;
-//
-//         // cout << "Now try to dequeue" << endl;
-//
-//         bool success = MyQueue.TryDequeue(number);
-//
-//         if(success)
-//         {
-//
-//             // cout << "value is " << number << endl;
-//
-//         }
-//
-//         else
-//         {
-//             cout << " queue is stopped" << endl;
-//             break;
-//
-//         }
-//     }
-//
-//
-//     cout << "Que size is : " << MyQueue.Size() <<  endl;
-// }
 void ConsumeFromQueue()
 {
   while(true) {
@@ -145,8 +105,6 @@ myMosq::myMosq(const char * _id,const char * _topic, const char * _host, int _po
   }
 
   void myMosq::on_message(const struct mosquitto_message *message) {
-    // std::cout << "Subscriber " << id << " received message of topic: " << message->topic << " Data: " << reinterpret_cast<char*>(message->payload) << "\n";
-    // InsertToQueue(atoi(reinterpret_cast<char*>(message->payload)));
     InsertToQueue(reinterpret_cast<char*>(message->payload));
   }
 
@@ -155,17 +113,12 @@ int main() {
 
     cout << "Test Started" << endl;
 
-    myMosq client("myProva", "home/prova", "127.0.0.1", 1883);
-    client.subscribe(NULL, "home/prova", 1);
+    myMosq client("myProva", "home/prova", "127.0.0.1", 1883);  //creating mosquitto client
+    client.subscribe(NULL, "home/prova", 1);                    //subscribing to "home/prova" topic with QoS=1
 
-    boost::thread consumer(consume, std::ref(MyQueue));
-    // boost::thread consumer(&MyConsumer.consume, i);
+    boost::thread consumer(consume, std::ref(MyQueue));         // starting the consumer thread passing as a parameter a reference to the queue
 
-    // boost::thread startInsertIntoQueue = boost::thread(InsertToQueue, 37);
-    // boost::thread consumeFromQueue = boost::thread(ConsumeFromQueue);
-
-    boost::this_thread::sleep(boost::posix_time::seconds(60)); //After 60 seconds
-
+    boost::this_thread::sleep(boost::posix_time::seconds(60));  // send stop signal to the queue after 60 seconds
     MyQueue.StopQueue();
 
     int endMain;
