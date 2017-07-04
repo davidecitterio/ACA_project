@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
   // boost::thread startInsertIntoQueue = boost::thread(InsertToQueue, 37);
   boost::thread consumeFromQueue = boost::thread(ConsumeFromQueue);
 
-  boost::this_thread::sleep(boost::posix_time::seconds(60)); //After 5 seconds
+  boost::this_thread::sleep(boost::posix_time::seconds(60)); //After 60 seconds
 
   MyQueue.StopQueue();
 
