@@ -12,7 +12,7 @@ void consume(SynchronisedQueue<string> &MyQueue) {
     string value;
     bool success = MyQueue.TryDequeue(value);
     if(success) {
-      cout << "\tvalue is " << value << endl;
+      // cout << "\tvalue is " << value << endl;
     }
     else {
       cout << " queue is stopped" << endl;

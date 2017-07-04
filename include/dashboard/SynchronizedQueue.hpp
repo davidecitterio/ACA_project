@@ -41,7 +41,7 @@ public:
 
         result= m_queue.front();
         m_queue.pop();
-        std::cout << "Removed: " << result << "\n";
+        std::cout << "\tRemoved: " << result << "\n";
 
         return true;
     }

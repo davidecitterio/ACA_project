@@ -107,24 +107,3 @@ myMosq::myMosq(const char * _id,const char * _topic, const char * _host, int _po
   void myMosq::on_message(const struct mosquitto_message *message) {
     InsertToQueue(reinterpret_cast<char*>(message->payload));
   }
-
-
-int main() {
-
-    cout << "Test Started" << endl;
-
-    myMosq client("myProva", "home/prova", "127.0.0.1", 1883);  //creating mosquitto client
-    client.subscribe(NULL, "home/prova", 1);                    //subscribing to "home/prova" topic with QoS=1
-
-    boost::thread consumer(consume, std::ref(MyQueue));         // starting the consumer thread passing as a parameter a reference to the queue
-
-    boost::this_thread::sleep(boost::posix_time::seconds(60));  // send stop signal to the queue after 60 seconds
-    MyQueue.StopQueue();
-
-    int endMain;
-
-    cin >> endMain;
-
-
-    return 0;
-}
