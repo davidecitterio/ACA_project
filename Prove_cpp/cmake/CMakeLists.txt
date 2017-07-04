@@ -77,7 +77,7 @@ set_target_properties( ${PROVA_NAME} PROPERTIES PUBLIC_HEADER "${HDR_FILES}" )
 
 add_executable( ${PROVA_NAME}_demo ${SRC_PATH}/main.cc ${SRC_PATH}/consumer.cc )
 
-target_link_libraries( ${PROVA_NAME}_demo boost_system boost_thread )
+target_link_libraries( ${PROVA_NAME}_demo boost_system boost_thread mosquitto mosquittopp)
 
 # target_link_libraries( ${PROVA_NAME}_demo LINK_PUBLIC ${Boost_LIBRARIES} )
 
