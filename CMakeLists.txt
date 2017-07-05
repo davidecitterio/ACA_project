@@ -74,7 +74,7 @@ set(HDR_FILES
 	${HDR_PATH}/dashboard/string_utility.hpp
 	${HDR_PATH}/dashboard/plot_description.hpp
 	${HDR_PATH}/dashboard/plotter.hpp
-  ${HDR_PATH}/dashboard/consumer.hpp
+  	${HDR_PATH}/dashboard/consumer.hpp
 	${HDR_PATH}/dashboard/SynchronizedQueue.hpp
 	${HDR_PATH}/dashboard/consumerMain.hpp
 	)
