@@ -8,29 +8,11 @@
 
 using namespace std;
 
-int i = 1;
 SynchronisedQueue<string> MyQueue;
 
 void InsertToQueue(char* i)
 {
   MyQueue.Enqueue(i);
-}
-
-void ConsumeFromQueue()
-{
-  while(true) {
-    string value;
-    // cout << "Now try to dequeue" << endl;
-    bool success = MyQueue.TryDequeue(value);
-    if(success) {
-      cout << "\tvalue is " << value << endl;
-    }
-    else {
-      cout << " queue is stopped" << endl;
-      break;
-    }
-  }
-  cout << "Que size is : " << MyQueue.Size() <<  endl;
 }
 
 /////////////////////
