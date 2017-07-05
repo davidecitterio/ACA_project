@@ -68,13 +68,10 @@ int main()
 
   boost::thread consumer(consume, std::ref(MyQueue));         // starting the consumer thread passing as a parameter a reference to the queue
 
-  boost::this_thread::sleep(boost::posix_time::seconds(60));  // send stop signal to the queue after 60 seconds
+  boost::this_thread::sleep(boost::posix_time::seconds(5));  // send stop signal to the queue after 60 seconds
   MyQueue.StopQueue();
-
-  int endMain;
-
-  cin >> endMain;
-
+  client.disconnect();
+  consumer.join();
 
   return 0;
 }
