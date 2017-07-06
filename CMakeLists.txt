@@ -74,7 +74,7 @@ set(HDR_FILES
 	${HDR_PATH}/dashboard/string_utility.hpp
 	${HDR_PATH}/dashboard/plot_description.hpp
 	${HDR_PATH}/dashboard/plotter.hpp
-  	${HDR_PATH}/dashboard/consumer.hpp
+  ${HDR_PATH}/dashboard/consumer.hpp
 	${HDR_PATH}/dashboard/SynchronizedQueue.hpp
 	${HDR_PATH}/dashboard/consumerMain.hpp
 	)
@@ -85,7 +85,7 @@ set_target_properties( ${DASHBOARD_NAME} PROPERTIES PUBLIC_HEADER "${HDR_FILES}"
 
 add_executable( ${DASHBOARD_NAME}_demo ${SRC_PATH}/main.cc )
 
-# adding boost and mosquitto libraries
+# linking boost and mosquitto libraries
 target_link_libraries( ${DASHBOARD_NAME}_demo boost_system boost_thread mosquitto mosquittopp)
 
 target_link_libraries(${DASHBOARD_NAME}_demo ${DASHBOARD_NAME} ${OpenCV_LIBS})
