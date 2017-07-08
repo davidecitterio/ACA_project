@@ -10,3 +10,6 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 .clang_complete
+data.dat
+dashboard_demo
+libdashboard.a

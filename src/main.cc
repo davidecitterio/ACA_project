@@ -1,13 +1,7 @@
 #include <iostream>
 #include <chrono>
 
-
 #include "dashboard/consumerMain.hpp"
-
-
-
-
-
 
 int main()
 {
@@ -26,7 +20,7 @@ int main()
 
 	dashboard::gnuplotter_synch::exec(plot_commands);
   */
-	
+
 
   //std::cout << "That's all, check for file \"demo.png\"" << std::endl;
 
