@@ -64,6 +64,7 @@ set(SRC_FILES
 	${SRC_PATH}/plot_description.cc
 	${SRC_PATH}/plotter.cc
 	${SRC_PATH}/consumer.cc
+	${SRC_PATH}/config.cc
 	)
 
 set(HDR_FILES
@@ -76,7 +77,8 @@ set(HDR_FILES
 	${HDR_PATH}/dashboard/plotter.hpp
   ${HDR_PATH}/dashboard/consumer.hpp
 	${HDR_PATH}/dashboard/SynchronizedQueue.hpp
-	${HDR_PATH}/dashboard/consumerMain.hpp
+	${HDR_PATH}/dashboard/myMosquitto.hpp
+	${HDR_PATH}/dashboard/config.hpp
 	)
 
 

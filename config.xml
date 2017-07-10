@@ -5,5 +5,12 @@
     <PlotSetting type="preamble">set yrange [0 : *]</PlotSetting>
     <PlotSetting type="preamble">set title "Simple Plot" font ",20"</PlotSetting>
     <PlotSetting type="delimiter">;</PlotSetting>
-    <PlotSetting type="howManyDataToPlot">4</PlotSetting>
+    <PlotSetting type="howManyDataToPlot">40</PlotSetting>
 </PlotConfig>
+<MosquittoConfig>
+  <MosquittoSetting type="clientName">myProva</MosquittoSetting>
+  <MosquittoSetting type="topic">home/prova</MosquittoSetting>
+  <MosquittoSetting type="hostAddress">127.0.0.1</MosquittoSetting>
+  <MosquittoSetting type="hostPort">1883</MosquittoSetting>
+  <MosquittoSetting type="QoS">1</MosquittoSetting>
+</MosquittoConfig>

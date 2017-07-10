@@ -1,7 +1,9 @@
 #include <iostream>
 #include <chrono>
 
-#include "dashboard/consumerMain.hpp"
+#include "dashboard/myMosquitto.hpp"
+#include "dashboard/config.hpp"
+#include "dashboard/consumer.hpp"
 
 int main()
 {
@@ -21,15 +23,20 @@ int main()
 	dashboard::gnuplotter_synch::exec(plot_commands);
   */
 
-
   //std::cout << "That's all, check for file \"demo.png\"" << std::endl;
 
   // my stuff
   cout << "Test Started" << endl;
 
-  myMosq client("myProva", "home/prova", "127.0.0.1", 1883);  //creating mosquitto client
-  client.subscribe(NULL, "home/prova", 1);
+  // Loading configuration from config.xml
+  map<string, list<string>> mosquittoConfig = {{"RootNode", {"MosquittoConfig"}}, {"SettingNode", {"MosquittoSetting"}}, {"clientName", {}}, {"topic", {}}, {"hostAddress", {}}, {"hostPort", {}}, {"QoS", {}}};
+  loadConfig(mosquittoConfig);
+  myMosq client(mosquittoConfig["clientName"].front().c_str(), mosquittoConfig["topic"].front().c_str(), mosquittoConfig["hostAddress"].front().c_str(), atoi(mosquittoConfig["hostPort"].front().c_str()));  //creating mosquitto client
+  client.subscribe(NULL, mosquittoConfig["topic"].front().c_str(), atoi(mosquittoConfig["QoS"].front().c_str()));
 
+  map<string, list<string>> consumerConfig = {{"RootNode", {"PlotConfig"}}, {"SettingNode", {"PlotSetting"}}, {"preamble", {}}, {"delimiter", {}}, {"howManyDataToPlot", {}}};
+  loadConfig(consumerConfig);
+  setConfig(consumerConfig);
   boost::thread consumer(consume, std::ref(MyQueue));         // starting the consumer thread passing as a parameter a reference to the queue
 
   boost::this_thread::sleep(boost::posix_time::seconds(60));  // send stop signal to the queue after 60 seconds
