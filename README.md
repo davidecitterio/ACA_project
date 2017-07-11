@@ -12,5 +12,5 @@ In order to run the project is necessary to install the boost and the mosquitto 
 
 ## Installing mosquitto libraries
 
-`sudo apt install libmosquitto-dev`
+`sudo apt install libmosquitto-dev` <br />
 `sudo apt install libmosquittopp-dev`
