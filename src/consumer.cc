@@ -60,7 +60,9 @@ struct dashboard::gnuplot_commands data( int x, int y, bool begin )
 }
 
 
-void consume(SynchronisedQueue<string> &MyQueue) {
+void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> config) {
+
+  setConfig(config);
 
   dashboard::gnuplotter_asynch my_gnuplot_window;
   my_gnuplot_window.start();

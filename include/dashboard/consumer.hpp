@@ -9,4 +9,4 @@ void setConfig(map<string, list<string>>);
 
 template <typename T>
 class SynchronisedQueue;                    //forward declaration of SynchronisedQueue class
-void consume(SynchronisedQueue<string> &q);
+void consume(SynchronisedQueue<string> &q, map<string, list<string>> config);

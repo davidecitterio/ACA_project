@@ -28,6 +28,7 @@ void loadConfig(map<string, list<string>>& attributes) {
   root_node = doc.first_node((attributes.find("RootNode")->second.front()).c_str());
   // Find the right setting node
   xml_node<> * node = root_node->first_node((attributes.find("SettingNode")->second.front()).c_str());
+  cout << "Node: " << node->name() << endl;
 
   // Iterate over the nodes
   for (; node; node = node->next_sibling())
@@ -36,7 +37,7 @@ void loadConfig(map<string, list<string>>& attributes) {
     // Iterate over the attributes
     for (auto attribute_iterator=attributes.begin(); attribute_iterator!=attributes.end(); ++attribute_iterator) {
       if (!type.compare(attribute_iterator->first)){
-        cout << attribute_iterator->first << " => " << node->value()<< endl;
+        cout << "\t" << attribute_iterator->first << " => " << node->value()<< endl;
         attributes[attribute_iterator->first].push_back(node->value());
         break;
       }

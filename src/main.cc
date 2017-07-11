@@ -31,13 +31,12 @@ int main()
   // Loading configuration from config.xml
   map<string, list<string>> mosquittoConfig = {{"RootNode", {"MosquittoConfig"}}, {"SettingNode", {"MosquittoSetting"}}, {"clientName", {}}, {"topic", {}}, {"hostAddress", {}}, {"hostPort", {}}, {"QoS", {}}};
   loadConfig(mosquittoConfig);
-  myMosq client(mosquittoConfig["clientName"].front().c_str(), mosquittoConfig["topic"].front().c_str(), mosquittoConfig["hostAddress"].front().c_str(), atoi(mosquittoConfig["hostPort"].front().c_str()));  //creating mosquitto client
+  myMosq client(mosquittoConfig);  //creating mosquitto client
   client.subscribe(NULL, mosquittoConfig["topic"].front().c_str(), atoi(mosquittoConfig["QoS"].front().c_str()));
 
   map<string, list<string>> consumerConfig = {{"RootNode", {"PlotConfig"}}, {"SettingNode", {"PlotSetting"}}, {"preamble", {}}, {"delimiter", {}}, {"howManyDataToPlot", {}}};
   loadConfig(consumerConfig);
-  setConfig(consumerConfig);
-  boost::thread consumer(consume, std::ref(MyQueue));         // starting the consumer thread passing as a parameter a reference to the queue
+  boost::thread consumer(consume, std::ref(MyQueue), consumerConfig);         // starting the consumer thread passing as a parameter a reference to the queue
 
   boost::this_thread::sleep(boost::posix_time::seconds(60));  // send stop signal to the queue after 60 seconds
   MyQueue.StopQueue();

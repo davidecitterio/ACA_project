@@ -17,6 +17,7 @@ private:
   void on_message(const struct mosquitto_message *message);
 public:
   myMosq(const char *id, const char * _topic, const char *host, int port);
+  myMosq(map<string, list<string>>);
   ~myMosq();
   bool send_message(const char * _message);
 };
@@ -28,6 +29,20 @@ myMosq::myMosq(const char * _id,const char * _topic, const char * _host, int _po
   this->port = _port;
   this->host = _host;
   this->topic = _topic;
+  std::cout << "Connecting to topic: " << topic << " on host: " << host << ":" << port << std::endl;
+  connect_async(host,     // non blocking connection to broker request
+    port,
+    keepalive);
+  loop_start();            // Start thread managing connection / publish / subscribe
+};
+
+myMosq::myMosq(map<string, list<string>> config) : mosquittopp(config["clientName"].front().c_str())  {
+  mosqpp::lib_init();        // Mandatory initialization for mosquitto library
+  this->keepalive = 60;    // Basic configuration setup for myMosq class
+  this->id = config["clientName"].front().c_str();
+  this->port = atoi(config["hostPort"].front().c_str());
+  this->host = config["hostAddress"].front().c_str();
+  this->topic = config["topic"].front().c_str();
   std::cout << "Connecting to topic: " << topic << " on host: " << host << ":" << port << std::endl;
   connect_async(host,     // non blocking connection to broker request
     port,

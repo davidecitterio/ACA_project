@@ -5,7 +5,7 @@
     <PlotSetting type="preamble">set yrange [0 : *]</PlotSetting>
     <PlotSetting type="preamble">set title "Simple Plot" font ",20"</PlotSetting>
     <PlotSetting type="delimiter">;</PlotSetting>
-    <PlotSetting type="howManyDataToPlot">40</PlotSetting>
+    <PlotSetting type="howManyDataToPlot">25</PlotSetting>
 </PlotConfig>
 <MosquittoConfig>
   <MosquittoSetting type="clientName">myProva</MosquittoSetting>
