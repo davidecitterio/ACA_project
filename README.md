@@ -14,3 +14,7 @@ In order to run the project is necessary to install the boost and the mosquitto 
 
 `sudo apt install libmosquitto-dev` <br />
 `sudo apt install libmosquittopp-dev`
+
+## Installing mosquitto clients (mosquitto-pub, mosquitto-sub)
+
+`sudo apt-get install mosquitto-clients`
