@@ -29,6 +29,11 @@ int main()
   cout << "Test Started" << endl;
 
   // Loading configuration from config.xml
+  map<string, list<string>> mainConfig = {{"RootNode", {"MainConfig"}}, {"SettingNode", {"MainSetting"}}, {"execTimeSeconds", {}}};
+  loadConfig(mainConfig);
+  int execTimeSeconds = atoi(mainConfig["execTimeSeconds"].front().c_str());
+  cout << "execTimeSeconds: " << execTimeSeconds << endl;
+
   map<string, list<string>> mosquittoConfig = {{"RootNode", {"MosquittoConfig"}}, {"SettingNode", {"MosquittoSetting"}}, {"clientName", {}}, {"topic", {}}, {"hostAddress", {}}, {"hostPort", {}}, {"QoS", {}}};
   loadConfig(mosquittoConfig);
   myMosq client(mosquittoConfig);  //creating mosquitto client
@@ -38,10 +43,12 @@ int main()
   loadConfig(consumerConfig);
   boost::thread consumer(consume, std::ref(MyQueue), consumerConfig);         // starting the consumer thread passing as a parameter a reference to the queue
 
-  boost::this_thread::sleep(boost::posix_time::seconds(60));  // send stop signal to the queue after 60 seconds
-  MyQueue.StopQueue();
-  client.disconnect();
-  consumer.join();
+  if (execTimeSeconds) {
+    boost::this_thread::sleep(boost::posix_time::seconds(execTimeSeconds));  // send stop signal to the queue after as specified in the config file
+    MyQueue.StopQueue();
+    client.disconnect();
+  }
 
+  consumer.join();
   return 0;
 }
