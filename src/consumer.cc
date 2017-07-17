@@ -55,7 +55,7 @@ struct dashboard::gnuplot_commands data( int x, int y, bool begin )
     addToFile(x, y);
   }
   struct dashboard::gnuplot_commands result;
-  result.push("plot '< tail -n ",howManyDataToPlot," data.dat' with lines ls 1");
+  result.push("plot '< sort data.dat | tail -n ",howManyDataToPlot,"' with lines ls 1 smooth unique");
   return result;
 }
 

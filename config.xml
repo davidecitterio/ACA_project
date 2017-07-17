@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PlotConfig>
     <PlotSetting type="preamble">set style line 1 lc rgb '#0060ad' lt 1 lw 2 pt 7 ps 1.5</PlotSetting>
-    <PlotSetting type="preamble">set xrange [0 : *]</PlotSetting>
+    <PlotSetting type="preamble">set xrange [* : *]</PlotSetting>
     <PlotSetting type="preamble">set yrange [0 : *]</PlotSetting>
     <PlotSetting type="preamble">set title "Simple Plot" font ",20"</PlotSetting>
     <PlotSetting type="delimiter">;</PlotSetting>
