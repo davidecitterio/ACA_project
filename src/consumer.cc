@@ -23,7 +23,7 @@ void setConfig(map<string, list<string>> config) {
   howManyDataToPlot = atoi(config["howManyDataToPlot"].front().c_str());
 }
 
-void addToFile(int x, int y){
+void addToFile(double x, double y){
   ofstream file;
   string data = ""+std::to_string(y)+" "+std::to_string(x)+"\n";
   file.open("data.dat", std::ios_base::app);
@@ -49,13 +49,14 @@ struct dashboard::gnuplot_commands demo_preamble( void )
   return result;
 }
 
-struct dashboard::gnuplot_commands data( int x, int y, bool begin )
+struct dashboard::gnuplot_commands data( double x, double y, bool begin )
 {
   if (!begin){
     addToFile(x, y);
   }
   struct dashboard::gnuplot_commands result;
-  result.push("plot '< sort data.dat | tail -n ",howManyDataToPlot,"' with lines ls 1 smooth unique");
+  //result.push("plot '< sort data.dat | tail -n ",howManyDataToPlot,"' with lines ls 1 smooth unique");
+  result.push("plot '< sort -nk1 data.dat | tail -n ",howManyDataToPlot,"' with lines ls 1");
   return result;
 }
 
@@ -75,12 +76,13 @@ void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> confi
   while(true) {
     string value;
     std::string x,y;
+    std::string::size_type sz;
 
     bool success = MyQueue.TryDequeue(value);
     if(success) {
       x = value.substr(0, value.find(delimiter));
       y = value.substr(value.find(delimiter)+1, strlen(value.c_str()));
-      my_gnuplot_window(data(std::stoi(x), std::stoi(y), false));
+      my_gnuplot_window(data(std::stod(x, &sz), std::stod(y, &sz), false));
     }
     else {
       cout << " queue is stopped" << endl;
