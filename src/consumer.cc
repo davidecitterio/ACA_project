@@ -29,11 +29,22 @@ void setConfig(map<string, list<string>> config) {
   howManyDataToPlot = atoi(config["howManyDataToPlot"].front().c_str());
 }
 
-void addToFile(double x, double y){
+void addToFile(double x, std::list<string> data){
   ofstream file;
-  string data = ""+std::to_string(y)+" "+std::to_string(x)+"\n";
+  string dataToPrint = "";
+  dataToPrint += std::to_string(x)+" ";
+
+  while (!data.empty()){
+    if (data.front().compare("*") != 0)
+      dataToPrint += data.front();
+    else
+      dataToPrint += "?";
+    dataToPrint += " ";
+    data.pop_front();
+  }
+  dataToPrint += "\n";
   file.open("data.dat", std::ios_base::app);
-  file << data;
+  file << dataToPrint;
   file.close();
 }
 
@@ -49,13 +60,13 @@ struct dashboard::gnuplot_commands demo_preamble( void )
   return result;
 }
 
-struct dashboard::gnuplot_commands data( double x, double y, bool begin )
+struct dashboard::gnuplot_commands data( double x, std::list<string> data, bool begin )
 {
   if (!begin){
-    addToFile(x, y);
+    addToFile(x, data);
   }
   struct dashboard::gnuplot_commands result;
-  result.push("plot '< sort -nk1 data.dat | tail -n ",howManyDataToPlot,"'"+ plotSettings);
+  result.push("plot '< sort -nk1 data.dat | tail -n ", howManyDataToPlot ,"' " + plotSettings);
   return result;
 }
 
@@ -70,18 +81,29 @@ void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> confi
   // initialize the plot
   my_gnuplot_window(demo_preamble());
   //show plot
-  my_gnuplot_window(data(0,0,true));
+  my_gnuplot_window(data(0,{},true));
 
   while(true) {
     string value;
-    std::string x,y;
+    std::string x;
+    std::list<string> dataToPlot;
     std::string::size_type sz;
+    size_t pos;
 
     bool success = MyQueue.TryDequeue(value);
     if(success) {
       x = value.substr(0, value.find(delimiter));
-      y = value.substr(value.find(delimiter)+1, strlen(value.c_str()));
-      my_gnuplot_window(data(std::stod(x, &sz), std::stod(y, &sz), false));
+      value.erase (0, value.find(delimiter)+delimiter.length());
+
+      while ((pos = value.find(delimiter)) != std::string::npos){
+        dataToPlot.push_back(value.substr(0, pos));
+        value.erase(0, pos + delimiter.length());
+      }
+      //last element
+      dataToPlot.push_back(value);
+
+      my_gnuplot_window(data(std::stod(x, &sz), dataToPlot, false));
+      dataToPlot.clear();
     }
     else {
       cout << " queue is stopped" << endl;
