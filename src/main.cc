@@ -39,7 +39,7 @@ int main()
   myMosq client(mosquittoConfig);  //creating mosquitto client
   client.subscribe(NULL, mosquittoConfig["topic"].front().c_str(), atoi(mosquittoConfig["QoS"].front().c_str()));
 
-  map<string, list<string>> consumerConfig = {{"RootNode", {"PlotConfig"}}, {"SettingNode", {"PlotSetting"}}, {"preamble", {}}, {"delimiter", {}}, {"howManyDataToPlot", {}}};
+  map<string, list<string>> consumerConfig = {{"RootNode", {"PlotConfig"}}, {"SettingNode", {"PlotSetting"}}, {"preamble", {}}, {"plotOption", {}}, {"delimiter", {}}, {"howManyDataToPlot", {}}};
   loadConfig(consumerConfig);
   boost::thread consumer(consume, std::ref(MyQueue), consumerConfig);         // starting the consumer thread passing as a parameter a reference to the queue
 

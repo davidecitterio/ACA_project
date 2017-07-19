@@ -11,13 +11,19 @@ using namespace std;
 
 //parametrization variables
 std::list<string> preamble;
+std::string plotSettings = "";
 static std::string delimiter;
 int howManyDataToPlot = 3;
+map<double, std::list<double>> dataToPlot;
 
 void setConfig(map<string, list<string>> config) {
   while (!config["preamble"].empty()){
     preamble.push_back((config["preamble"].front()));
     config["preamble"].pop_front();
+  }
+  while (!config["plotOption"].empty()){
+    plotSettings += config["plotOption"].front() + " ";
+    config["plotOption"].pop_front();
   }
   delimiter = config["delimiter"].front();
   howManyDataToPlot = atoi(config["howManyDataToPlot"].front().c_str());
@@ -34,12 +40,6 @@ void addToFile(double x, double y){
 struct dashboard::gnuplot_commands demo_preamble( void )
 {
   struct dashboard::gnuplot_commands result;
-  //result.push("set key left box");
-  //result.push("set samples ", 50);
-  //result.push("set style line 1 lc rgb '#0060ad' lt 1 lw 2 pt 7 ps 1.5");
-  //result.push("set xrange [0 : *]");
-  //result.push("set yrange [0 : *]");
-  //result.push("set title \"Simple Plot\" font \",20\"");
 
   while (!preamble.empty()){
     result.push(preamble.front());
@@ -55,8 +55,7 @@ struct dashboard::gnuplot_commands data( double x, double y, bool begin )
     addToFile(x, y);
   }
   struct dashboard::gnuplot_commands result;
-  //result.push("plot '< sort data.dat | tail -n ",howManyDataToPlot,"' with lines ls 1 smooth unique");
-  result.push("plot '< sort -nk1 data.dat | tail -n ",howManyDataToPlot,"' with lines ls 1");
+  result.push("plot '< sort -nk1 data.dat | tail -n ",howManyDataToPlot,"'"+ plotSettings);
   return result;
 }
 

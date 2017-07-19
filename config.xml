@@ -6,6 +6,7 @@
     <PlotSetting type="preamble">set title "Simple Plot" font ",20"</PlotSetting>
     <PlotSetting type="delimiter">;</PlotSetting>
     <PlotSetting type="howManyDataToPlot">5</PlotSetting>
+    <PlotSetting type="plotOption">with lines ls 1 title "prova"</PlotSetting>
 </PlotConfig>
 <MosquittoConfig>
   <MosquittoSetting type="clientName">myProva</MosquittoSetting>
