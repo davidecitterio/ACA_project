@@ -85,7 +85,6 @@ struct dashboard::gnuplot_commands data( double x, std::list<string> data, bool 
   dataList += "EOF";
 
   result.push("plot " + plotSettings + "\n" + dataList+ "\n" + dataList);
-  cout << "plot " << plotSettings << "\n" << dataList <<endl;
   return result;
 }
 
