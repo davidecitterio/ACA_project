@@ -7,8 +7,8 @@
     <PlotSetting type="preamble">set title "Simple Plot" font ",20"</PlotSetting>
     <PlotSetting type="delimiter">;</PlotSetting>
     <PlotSetting type="howManyDataToPlot">3</PlotSetting>
-    <PlotSetting type="plotOption">using 1:2 with lines ls 1 title "Funct 1", </PlotSetting>
-    <PlotSetting type="plotOption">'' using 1:3 with lines ls 2 title "Funct 2"</PlotSetting>
+    <PlotSetting type="plotOption">'-' using 1:2 with lines ls 1 title "Funct 1", </PlotSetting>
+    <PlotSetting type="plotOption">'-' using 1:3 with lines ls 2 title "Funct 2" </PlotSetting>
 </PlotConfig>
 <MosquittoConfig>
   <MosquittoSetting type="clientName">myProva</MosquittoSetting>

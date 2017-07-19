@@ -14,7 +14,7 @@ std::list<string> preamble;
 std::string plotSettings = "";
 static std::string delimiter;
 int howManyDataToPlot = 3;
-map<double, std::list<double>> dataToPlot;
+std::list<string> dataToPlot;
 
 void setConfig(map<string, list<string>> config) {
   while (!config["preamble"].empty()){
@@ -30,7 +30,7 @@ void setConfig(map<string, list<string>> config) {
 }
 
 void addToFile(double x, std::list<string> data){
-  ofstream file;
+  //ofstream file;
   string dataToPrint = "";
   dataToPrint += std::to_string(x)+" ";
 
@@ -39,13 +39,25 @@ void addToFile(double x, std::list<string> data){
       dataToPrint += data.front();
     else
       dataToPrint += "?";
-    dataToPrint += " ";
     data.pop_front();
+    if (!data.empty())
+      dataToPrint += " ";
   }
   dataToPrint += "\n";
+
+  if (dataToPlot.size() >= howManyDataToPlot){
+    dataToPlot.pop_front();
+    dataToPlot.push_back(dataToPrint);
+  }
+  else
+    dataToPlot.push_back(dataToPrint);
+
+  // file saving - deprecated
+  /*
   file.open("data.dat", std::ios_base::app);
   file << dataToPrint;
   file.close();
+  */
 }
 
 struct dashboard::gnuplot_commands demo_preamble( void )
@@ -66,7 +78,14 @@ struct dashboard::gnuplot_commands data( double x, std::list<string> data, bool 
     addToFile(x, data);
   }
   struct dashboard::gnuplot_commands result;
-  result.push("plot '< sort -nk1 data.dat | tail -n ", howManyDataToPlot ,"' " + plotSettings);
+  std::string dataList;
+  for (auto v:dataToPlot)
+    dataList += v;
+
+  dataList += "EOF";
+
+  result.push("plot " + plotSettings + "\n" + dataList+ "\n" + dataList);
+  cout << "plot " << plotSettings << "\n" << dataList <<endl;
   return result;
 }
 
@@ -86,7 +105,7 @@ void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> confi
   while(true) {
     string value;
     std::string x;
-    std::list<string> dataToPlot;
+    std::list<string> dataY;
     std::string::size_type sz;
     size_t pos;
 
@@ -96,14 +115,14 @@ void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> confi
       value.erase (0, value.find(delimiter)+delimiter.length());
 
       while ((pos = value.find(delimiter)) != std::string::npos){
-        dataToPlot.push_back(value.substr(0, pos));
+        dataY.push_back(value.substr(0, pos));
         value.erase(0, pos + delimiter.length());
       }
       //last element
-      dataToPlot.push_back(value);
+      dataY.push_back(value);
 
-      my_gnuplot_window(data(std::stod(x, &sz), dataToPlot, false));
-      dataToPlot.clear();
+      my_gnuplot_window(data(std::stod(x, &sz), dataY, false));
+      dataY.clear();
     }
     else {
       cout << " queue is stopped" << endl;
