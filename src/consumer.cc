@@ -9,27 +9,52 @@
 using namespace rapidxml;
 using namespace std;
 
-//parametrization variables
-std::list<string> preamble;
-std::string plotSettings = "";
-static std::string delimiter;
-int howManyDataToPlot = 3;
-std::list<string> dataToPlot;
+class Consumer {
+public:
+  Consumer(map<string, list<string>> config, SynchronisedQueue<string> &MyQueue);
+  void dump();
 
-void setConfig(map<string, list<string>> config) {
+private:
+  list<string> dataToPlot;
+  list<string> preamble;
+  string plotSettings = "";
+  string id;
+  string delimiter;
+  int howManyDataToPlot = 10;
+  int functionsQuantity = 0;
+
+  void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> config);
+  void setConfig(map<string, list<string>> config);
+  void addToFile(double x, std::list<string> data);
+  struct dashboard::gnuplot_commands demo_preamble ( void );
+  struct dashboard::gnuplot_commands data( double x, std::list<string> data, bool begin );
+};
+
+Consumer::Consumer(map<string, list<string>> config, SynchronisedQueue<string> &MyQueue) {
+  boost::thread consumerThread(&Consumer::consume, this, std::ref(MyQueue), config);
+}
+
+void Consumer::dump() {
+  cout << "ID: " << id << "\nDelimiter: " << delimiter << endl;
+}
+
+void Consumer::setConfig(map<string, list<string>> config) {
+
   while (!config["preamble"].empty()){
     preamble.push_back((config["preamble"].front()));
     config["preamble"].pop_front();
   }
   while (!config["plotOption"].empty()){
-    plotSettings += config["plotOption"].front() + " ";
+    plotSettings += config["plotOption"].front() + ", ";
     config["plotOption"].pop_front();
+    functionsQuantity++;  // A single plotOption node for each function to plot
   }
   delimiter = config["delimiter"].front();
   howManyDataToPlot = atoi(config["howManyDataToPlot"].front().c_str());
+  id = config["id"].front();
 }
 
-void addToFile(double x, std::list<string> data){
+void Consumer::addToFile(double x, std::list<string> data){
   //ofstream file;
   string dataToPrint = "";
   dataToPrint += std::to_string(x)+" ";
@@ -51,19 +76,11 @@ void addToFile(double x, std::list<string> data){
   }
   else
     dataToPlot.push_back(dataToPrint);
-
-  // file saving - deprecated
-  /*
-  file.open("data.dat", std::ios_base::app);
-  file << dataToPrint;
-  file.close();
-  */
 }
 
-struct dashboard::gnuplot_commands demo_preamble( void )
+struct dashboard::gnuplot_commands Consumer::demo_preamble( void )
 {
   struct dashboard::gnuplot_commands result;
-
   while (!preamble.empty()){
     result.push(preamble.front());
     preamble.pop_front();
@@ -72,8 +89,10 @@ struct dashboard::gnuplot_commands demo_preamble( void )
   return result;
 }
 
-struct dashboard::gnuplot_commands data( double x, std::list<string> data, bool begin )
+struct dashboard::gnuplot_commands Consumer::data( double x, std::list<string> data, bool begin )
 {
+  string resultString = "";
+
   if (!begin){
     addToFile(x, data);
   }
@@ -84,12 +103,17 @@ struct dashboard::gnuplot_commands data( double x, std::list<string> data, bool 
 
   dataList += "EOF";
 
-  result.push("plot " + plotSettings + "\n" + dataList+ "\n" + dataList);
+  resultString = "plot " + plotSettings;
+  for (int i = 0; i < functionsQuantity; i++) {
+    resultString += "\n" + dataList;
+  }
+
+  result.push(resultString);
   return result;
 }
 
 
-void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> config) {
+void Consumer::consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> config) {
 
   setConfig(config);
 
@@ -101,35 +125,39 @@ void consume(SynchronisedQueue<string> &MyQueue, map<string, list<string>> confi
   //show plot
   my_gnuplot_window(data(0,{},true));
 
+
   while(true) {
     string value;
-    std::string x;
-    std::list<string> dataY;
-    std::string::size_type sz;
+    string x;
+    list<string> dataY;
+    string::size_type sz;
     size_t pos;
 
-    bool success = MyQueue.TryDequeue(value);
+    bool success = MyQueue.TryDequeueIdDelimiter(value, id, delimiter);
     if(success) {
-      x = value.substr(0, value.find(delimiter));
-      value.erase (0, value.find(delimiter)+delimiter.length());
+      if (id == value.substr(0, value.find(delimiter))) {
+        value.erase (0, value.find(delimiter)+delimiter.length());
 
-      while ((pos = value.find(delimiter)) != std::string::npos){
-        dataY.push_back(value.substr(0, pos));
-        value.erase(0, pos + delimiter.length());
+        x = value.substr(0, value.find(delimiter));
+        value.erase (0, value.find(delimiter)+delimiter.length());
+
+
+        while ((pos = value.find(delimiter)) != std::string::npos){
+          dataY.push_back(value.substr(0, pos));
+          value.erase(0, pos + delimiter.length());
+        }
+        //last element
+        dataY.push_back(value);
+
+        my_gnuplot_window(data(std::stod(x, &sz), dataY, false));
+        dataY.clear();
       }
-      //last element
-      dataY.push_back(value);
-
-      my_gnuplot_window(data(std::stod(x, &sz), dataY, false));
-      dataY.clear();
     }
     else {
-      cout << " queue is stopped" << endl;
       break;
     }
   }
 
   // wait that the queue is complete
   my_gnuplot_window.wait();
-  cout << "Que size is : " << MyQueue.Size() <<  endl;
 }

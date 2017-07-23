@@ -20,6 +20,7 @@ public:
   myMosq(map<string, list<string>>);
   ~myMosq();
   bool send_message(const char * _message);
+  SynchronisedQueue<string> * MyQueue;
 };
 
 myMosq::myMosq(const char * _id,const char * _topic, const char * _host, int _port) : mosquittopp(_id) {

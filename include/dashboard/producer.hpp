@@ -4,7 +4,6 @@ using namespace std;
 
 SynchronisedQueue<string> MyQueue;
 
-void produce(char* i)
-{
+void produce(char* i) {
   MyQueue.Enqueue(i);
 }

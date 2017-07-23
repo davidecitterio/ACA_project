@@ -17,8 +17,7 @@ public:
         if(EnqueueData)
         {
             m_queue.push(data);
-            m_cond.notify_one();
-            std::cout << "Inserted: " << data << "\n";
+            m_cond.notify_all();
         }
 
     }
@@ -41,7 +40,29 @@ public:
 
         result= m_queue.front();
         m_queue.pop();
-        std::cout << "\tRemoved: " << result << "\n";
+
+        return true;
+    }
+
+    bool TryDequeueIdDelimiter(T& result, std::string id, std::string delimiter)
+    {
+        boost::unique_lock<boost::mutex> lock(m_mutex);
+
+        while (m_queue.empty() && (! RequestToEnd))
+        {
+            m_cond.wait(lock);
+        }
+
+        if( RequestToEnd )
+        {
+             DoEndActions();
+             return false;
+        }
+
+        result= m_queue.front();
+        if (id == result.substr(0, result.find(delimiter))) {
+          m_queue.pop();
+        }
 
         return true;
     }
@@ -50,7 +71,7 @@ public:
     {
         boost::unique_lock<boost::mutex> lock(m_mutex);
         RequestToEnd =  true;
-        m_cond.notify_one();
+        m_cond.notify_all();
     }
 
     int Size()
@@ -68,7 +89,7 @@ private:
 
         while (!m_queue.empty())
         {
-          std::cout << "Throwing away: " << m_queue.front() << "\n";
+          // std::cout << "Throwing away: " << m_queue.front() << "\n";
           m_queue.pop();
         }
     }

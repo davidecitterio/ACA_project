@@ -3,4 +3,4 @@
 
 using namespace std;
 
-void loadConfig(map<string, list<string>>& attributes);
+void loadConfig(map<string, list<string>>& attributes, string file);
