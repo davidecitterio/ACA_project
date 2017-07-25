@@ -12,6 +12,7 @@
   <MosquittoSetting type="QoS">1</MosquittoSetting>
 </MosquittoConfig>
 
+<!-- <PlotConfig_N> where N is a sequential index from 1 to "windowsQuantity" -->
 <PlotConfig_1>
   <PlotSetting type="preamble">set title "Simple Plot 1" font ",20"</PlotSetting>
   <PlotSetting type="delimiter">;</PlotSetting>
